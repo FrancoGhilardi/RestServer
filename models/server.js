@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 
 export class Server {
   constructor() {
@@ -13,14 +14,30 @@ export class Server {
 
   //#region MIDDLEWARE
   middleware() {
+    //? Cors
+    this.app.use(cors());
+
+    //?Directory public
     this.app.use(express.static("public"));
   }
   //#endregion
 
   //#region RUTAS
   routes() {
-    this.app.get("/", (req, res) => {
-      res.send("Welcome");
+    this.app.get("/api", (req, res) => {
+      res.json({ Message: "GET" });
+    });
+
+    this.app.put("/api", (req, res) => {
+      res.status(400).json({ Message: "PUT" });
+    });
+
+    this.app.post("/api", (req, res) => {
+      res.status(201).json({ Message: "POST" });
+    });
+
+    this.app.delete("/api", (req, res) => {
+      res.json({ Message: "DELETE" });
     });
   }
   //#endregion
