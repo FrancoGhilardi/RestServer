@@ -16,10 +16,13 @@ export class Server {
 
   //#region MIDDLEWARE
   middleware() {
-    //? Cors
+    //Cors
     this.app.use(cors());
 
-    //?Directory public
+    //Parse and read body
+    this.app.use(express.json());
+
+    //Directory public
     this.app.use(express.static("public"));
   }
   //#endregion
