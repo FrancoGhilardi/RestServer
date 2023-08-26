@@ -1,10 +1,12 @@
 import express from "express";
 import cors from "cors";
+import { router } from "../routes/user.js";
 
 export class Server {
   constructor() {
     this.app = express();
     this.port = process.env.PORT;
+    this.userPath = "/api/users";
 
     //!Middleware
     this.middleware();
@@ -24,21 +26,7 @@ export class Server {
 
   //#region RUTAS
   routes() {
-    this.app.get("/api", (req, res) => {
-      res.json({ Message: "GET" });
-    });
-
-    this.app.put("/api", (req, res) => {
-      res.status(400).json({ Message: "PUT" });
-    });
-
-    this.app.post("/api", (req, res) => {
-      res.status(201).json({ Message: "POST" });
-    });
-
-    this.app.delete("/api", (req, res) => {
-      res.json({ Message: "DELETE" });
-    });
+    this.app.use(this.userPath, router);
   }
   //#endregion
 
