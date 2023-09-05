@@ -1,14 +1,16 @@
-import { response } from "express";
+import { response, request } from "express";
 
 //#region METHODS GET
-const userGet = (req, res = response) => {
-  res.json({ Message: "GET controller" });
+const userGet = (req = request, res = response) => {
+  const { name } = req.query;
+  res.json({ Message: "GET controller", name });
 };
 //#endregion
 
 //#region METHODS PUT
 const userPut = (req, res = response) => {
-  res.status(400).json({ Message: "PUT controller" });
+  const id = req.params.id;
+  res.status(400).json({ Message: "PUT controller", id });
 };
 //#endregion
 
