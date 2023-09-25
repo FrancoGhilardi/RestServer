@@ -1,4 +1,6 @@
 import { response, request } from "express";
+import { MyModel } from "../models/usuario.js";
+import bcryptjs from "bcryptjs";
 
 //#region METHODS GET
 const userGet = (req = request, res = response) => {
@@ -15,9 +17,20 @@ const userPut = (req, res = response) => {
 //#endregion
 
 //#region METHODS POST
-const userPost = (req, res = response) => {
-  const { nombre, edad } = req.body;
-  res.status(201).json({ Message: "POST controller", nombre, edad });
+const userPost = async (req, res = response) => {
+  const { name, email, password, rol } = req.body;
+
+  const usuario = new MyModel({ name, email, password, rol });
+
+  //Verificar si el correo existe
+
+  //Encriptar contraseña
+  const salt = bcryptjs.genSaltSync();
+  usuario.password = bcryptjs.hashSync(password, salt);
+
+  //Guardar usuario en la base de datos
+  await usuario.save();
+  res.status(201).json({ Message: "POST controller", usuario });
 };
 //#endregion
 
