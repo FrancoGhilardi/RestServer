@@ -1,5 +1,7 @@
 import { Schema, model } from "mongoose";
 
+export const enumRol = ["ADMIN_ROLE", "USER_ROLE"];
+
 const UsuarioSchema = Schema({
   name: {
     type: String,
@@ -20,7 +22,7 @@ const UsuarioSchema = Schema({
   rol: {
     type: String,
     required: [true, "This rol is obligatory"],
-    enum: ["ADMIN_ROLE", "USER_ROLE"],
+    enum: enumRol,
   },
   state: {
     type: Boolean,
@@ -31,4 +33,10 @@ const UsuarioSchema = Schema({
     default: false,
   },
 });
-export const MyModel = model("Usuario", UsuarioSchema);
+
+UsuarioSchema.methods.toJSON = function () {
+  const { __v, password, ...user } = this.toObject();
+  return user;
+};
+
+export const Usuario = model("Usuario", UsuarioSchema);

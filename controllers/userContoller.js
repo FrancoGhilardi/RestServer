@@ -1,18 +1,36 @@
 import { response, request } from "express";
-import { MyModel } from "../models/usuario.js";
+import { Usuario } from "../models/usuario.js";
 import bcryptjs from "bcryptjs";
 
 //#region METHODS GET
-const userGet = (req = request, res = response) => {
-  const { name } = req.query;
-  res.json({ Message: "GET controller", name });
+const userGet = async (req = request, res = response) => {
+  const { limit = 5, start = 0 } = req.query;
+  const filterResult = { state: true };
+
+  const [Data, Total] = await Promise.all([
+    Usuario.find(filterResult).skip(Number(start)).limit(Number(limit)),
+    Usuario.countDocuments(filterResult),
+  ]);
+
+  res.json({ Data, Total });
 };
 //#endregion
 
 //#region METHODS PUT
-const userPut = (req, res = response) => {
-  const id = req.params.id;
-  res.status(400).json({ Message: "PUT controller", id });
+const userPut = async (req, res = response) => {
+  const { id } = req.params;
+  const { _id, password, google, email, ...data } = req.body;
+
+  //TODO:Validate against database
+  if (password) {
+    //Encrypt password
+    const salt = bcryptjs.genSaltSync();
+    data.password = bcryptjs.hashSync(password, salt);
+  }
+
+  const usuario = await Usuario.findByIdAndUpdate(id, data);
+
+  res.status(400).json({ usuario });
 };
 //#endregion
 
@@ -20,23 +38,25 @@ const userPut = (req, res = response) => {
 const userPost = async (req, res = response) => {
   const { name, email, password, rol } = req.body;
 
-  const usuario = new MyModel({ name, email, password, rol });
+  const usuario = new Usuario({ name, email, password, rol });
 
-  //Verificar si el correo existe
-
-  //Encriptar contraseña
+  //Encrypt password
   const salt = bcryptjs.genSaltSync();
   usuario.password = bcryptjs.hashSync(password, salt);
 
-  //Guardar usuario en la base de datos
+  //Save user to database
   await usuario.save();
-  res.status(201).json({ Message: "POST controller", usuario });
+  res.status(201).json({ usuario });
 };
 //#endregion
 
 //#region METHODS DELETE
-const userDelete = (req, res = response) => {
-  res.json({ Message: "DELETE controller" });
+const userDelete = async (req, res = response) => {
+  const { id } = req.params;
+
+  const usuario = await Usuario.findByIdAndUpdate(id, { state: false });
+
+  res.json({ usuario });
 };
 //#endregion
 
