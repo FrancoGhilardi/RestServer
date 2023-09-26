@@ -45,7 +45,7 @@ export class Server {
 
   //#region LISTEN
   listen() {
-    this.app.listen(this.port, () => console.log(`Puerto: ${this.port}`));
+    this.app.listen(this.port, () => console.log(`Port: ${this.port}`));
   }
   //#endregion
 }

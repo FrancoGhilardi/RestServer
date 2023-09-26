@@ -30,7 +30,7 @@ const userPut = async (req, res = response) => {
 
   const usuario = await Usuario.findByIdAndUpdate(id, data);
 
-  res.status(400).json({ usuario });
+  res.json({ usuario });
 };
 //#endregion
 
