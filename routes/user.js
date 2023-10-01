@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { check } from "express-validator";
 import {
   userDelete,
   userGet,
@@ -6,8 +7,9 @@ import {
   userPost,
   userPut,
 } from "../controllers/userContoller.js";
-import { check } from "express-validator";
 import { validateFields } from "../middlewares/validateFields.js";
+import { validateJWT } from "../middlewares/validateJWT.js";
+import { containRole, isAdminRole } from "../middlewares/validateRoles.js";
 import {
   isExistEmail,
   isExistUserId,
@@ -16,8 +18,11 @@ import {
 
 export const router = Router();
 
+//#region GET
 router.get("/", userGet);
+//#endregion
 
+//#region PUT
 router.put(
   "/:id",
   [
@@ -28,7 +33,9 @@ router.put(
   ],
   userPut
 );
+//#endregion
 
+//#region POST
 router.post(
   "/",
   [
@@ -46,15 +53,23 @@ router.post(
   ],
   userPost
 );
+//#endregion
 
+//#region PATCH
 router.patch("/", userPatch);
+//#endregion
 
+//#region DELETE
 router.delete(
   "/:id",
   [
+    validateJWT,
+    // isAdminRole,
+    containRole("ADNIN_ROLE", "VENTAS_ROLE", "USER_ROLE"),
     check("id", "It is not a valid ID").isMongoId(),
     check("id").custom(isExistUserId),
     validateFields,
   ],
   userDelete
 );
+//#endregion

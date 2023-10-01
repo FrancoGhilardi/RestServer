@@ -2,12 +2,14 @@ import express from "express";
 import cors from "cors";
 import { router } from "../routes/user.js";
 import { dbConnection } from "../database/config.db.js";
+import { auth } from "../routes/auth.js";
 
 export class Server {
   constructor() {
     this.app = express();
     this.port = process.env.PORT;
     this.userPath = "/api/users";
+    this.authPath = "/api/Auth";
 
     //!CONNECT TO DB
     this.conectToDB();
@@ -39,6 +41,7 @@ export class Server {
 
   //#region RUTAS
   routes() {
+    this.app.use(this.authPath, auth);
     this.app.use(this.userPath, router);
   }
   //#endregion
