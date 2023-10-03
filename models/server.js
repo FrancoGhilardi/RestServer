@@ -3,13 +3,17 @@ import cors from "cors";
 import { router } from "../routes/user.js";
 import { dbConnection } from "../database/config.db.js";
 import { auth } from "../routes/auth.js";
+import { categories } from "../routes/categories.js";
 
 export class Server {
   constructor() {
     this.app = express();
     this.port = process.env.PORT;
-    this.userPath = "/api/users";
-    this.authPath = "/api/Auth";
+    this.paths = {
+      auth: "/api/Auth",
+      categories: "/api/categories",
+      user: "/api/users",
+    };
 
     //!CONNECT TO DB
     this.conectToDB();
@@ -41,8 +45,9 @@ export class Server {
 
   //#region RUTAS
   routes() {
-    this.app.use(this.authPath, auth);
-    this.app.use(this.userPath, router);
+    this.app.use(this.paths.auth, auth);
+    this.app.use(this.paths.categories, categories);
+    this.app.use(this.paths.user, router);
   }
   //#endregion
 

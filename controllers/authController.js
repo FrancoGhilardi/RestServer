@@ -21,9 +21,8 @@ export const login = async (req, res = response) => {
         .json({ msg: "Incorrect user or password - state:false" });
 
     //Verify password
-    console.log({ password, Userpass: usuario.password });
     const validPassword = bcryptjs.compareSync(password, usuario.password);
-    console.log({ validPassword });
+
     if (!validPassword)
       return res
         .status(400)
